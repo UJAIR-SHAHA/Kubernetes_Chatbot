@@ -2,11 +2,13 @@ from google import genai
 import os
 from flask import Flask, jsonify, render_template, request
 from google.genai import types
+from flask_cors import CORS
 
 
 gemini_api_key = os.getenv("gemini_api_key")
 
 app = Flask(__name__)
+CORS(app)
 
 session_history = {}
 
@@ -49,4 +51,5 @@ def query():
 
 # Run the Flask app
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
