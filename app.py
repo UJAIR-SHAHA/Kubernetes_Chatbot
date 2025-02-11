@@ -15,14 +15,17 @@ session_history = {}
 
 def chat_kubernetes(user_query):
     client = genai.Client(api_key=gemini_api_key)
+    # sys_instruct = f"""
+    # You are the chatbot that answers only Kubernetes documentation-related questions.
+    # If the user's query is related to a previous query, use the {session_history.get("last_interaction", "")}
+    # from the previous turn.
+    # If the user's query is completely unrelated, respond politely that you can only answer Kubernetes questions.
+    # """
     sys_instruct = f"""
-    You are the chatbot that answers only Kubernetes documentation-related questions.
+        You are the chatbot that answers users query that is related to only Kubernetes documentation.
+        If the user's query is completely unrelated, respond politely that you can only answer Kubernetes questions.
+        """
 
-    If the user's query is related to a previous query, use the {session_history.get("last_interaction", "")} from the previous turn.
-    If the user's query is completely unrelated, respond politely that you can only answer Kubernetes questions.
-
-
-    """  # Use get to handle empty dict gracefully
     chat = client.chats.create(model="gemini-2.0-flash",config=types.GenerateContentConfig(
             system_instruction=sys_instruct, max_output_tokens=500,
             temperature=0.1))
